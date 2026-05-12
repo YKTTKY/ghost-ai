@@ -25,11 +25,13 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
         className={`fixed left-0 top-0 z-50 h-screen w-80 p-3 transition-transform duration-200 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        aria-hidden={!isOpen}
+        {...(!isOpen ? { inert: '' } : {})}
       >
         <div className="flex h-full w-full flex-col rounded-2xl border border-border-default bg-surface shadow-lg">
           <div className="flex items-center justify-between px-4 pt-4 pb-3">
             <h2 className="text-base font-medium text-text-primary">Projects</h2>
-            <Button variant="ghost" size="icon-sm" onClick={onClose}>
+            <Button variant="ghost" size="icon-sm" onClick={onClose} tabIndex={!isOpen ? -1 : undefined}>
               <XIcon className="size-4" />
               <span className="sr-only">Close sidebar</span>
             </Button>
@@ -38,8 +40,8 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex min-h-0 flex-1 flex-col">
             <div className="px-4 pb-2">
               <TabsList className="w-full">
-                <TabsTrigger value="my-projects" className="flex-1">My Projects</TabsTrigger>
-                <TabsTrigger value="shared" className="flex-1">Shared</TabsTrigger>
+                <TabsTrigger value="my-projects" className="flex-1" tabIndex={!isOpen ? -1 : undefined}>My Projects</TabsTrigger>
+                <TabsTrigger value="shared" className="flex-1" tabIndex={!isOpen ? -1 : undefined}>Shared</TabsTrigger>
               </TabsList>
             </div>
 
@@ -52,7 +54,7 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
           </Tabs>
 
           <div className="p-4 pt-2">
-            <Button className="w-full gap-2">
+            <Button className="w-full gap-2" tabIndex={!isOpen ? -1 : undefined}>
               <Plus className="size-4" />
               New Project
             </Button>
