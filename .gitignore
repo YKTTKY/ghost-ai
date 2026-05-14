@@ -25,6 +25,7 @@
 *.pem
 
 # debug
+/context/current-issue.md
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
