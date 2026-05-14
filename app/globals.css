@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@clerk/ui/themes/shadcn.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -132,4 +133,61 @@
   html {
     @apply font-sans;
   }
+}
+
+/* --- Clerk auth component overrides --- */
+.cl-socialButtonsBlockButton {
+  border: 1px solid var(--border-default) !important;
+  background-color: transparent !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  background-color: var(--bg-elevated) !important;
+}
+
+.cl-socialButtonsBlockButtonText {
+  color: var(--text-primary) !important;
+}
+
+.cl-lastAuthenticationStrategyBadge {
+  color: var(--text-muted) !important;
+  background-color: var(--bg-subtle) !important;
+}
+
+.cl-socialButtonsIconButton {
+  border: 1px solid var(--border-default) !important;
+  background-color: transparent !important;
+}
+
+.cl-socialButtonsIconButton:hover {
+  background-color: var(--bg-elevated) !important;
+}
+
+.cl-dividerLine {
+  background-color: var(--border-default) !important;
+}
+
+.cl-dividerText {
+  color: var(--text-muted) !important;
+}
+
+.cl-formFieldLabel {
+  color: var(--text-secondary) !important;
+}
+
+.cl-formButtonPrimary {
+  background-color: var(--accent-primary) !important;
+  color: var(--bg-base) !important;
+}
+
+.cl-formButtonPrimary:hover {
+  opacity: 0.9 !important;
+}
+
+.cl-footerActionText {
+  color: var(--text-muted) !important;
+}
+
+.cl-footerActionLink {
+  color: var(--accent-primary) !important;
 }

@@ -26,7 +26,7 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-hidden={!isOpen}
-        {...(!isOpen ? { inert: '' } : {})}
+        inert={!isOpen || undefined}
       >
         <div className="flex h-full w-full flex-col rounded-2xl border border-border-default bg-surface shadow-lg">
           <div className="flex items-center justify-between px-4 pt-4 pb-3">

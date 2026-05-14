@@ -1,5 +1,7 @@
 "use client"
 
+import { UserButton } from "@clerk/nextjs"
+import { dark } from "@clerk/ui/themes"
 import { Button } from "@/components/ui/button"
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 
@@ -22,7 +24,21 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar }: EditorNavbarPro
         </Button>
       </div>
       <div />
-      <div />
+      <div className="flex items-center">
+        <UserButton
+          appearance={{
+            theme: dark,
+            variables: {
+              colorPrimary: "var(--accent-primary)",
+              colorBackground: "var(--bg-surface)",
+              colorForeground: "var(--text-primary)",
+              colorMutedForeground: "var(--text-secondary)",
+              colorDanger: "var(--state-error)",
+              fontFamily: "var(--font-geist-sans)",
+            },
+          }}
+        />
+      </div>
     </nav>
   )
 }
