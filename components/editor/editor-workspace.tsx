@@ -9,6 +9,13 @@ import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectDialogs } from "@/components/editor/project-dialogs"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
 
+/**
+ * Render the main editor workspace UI and manage local project state and dialog flows.
+ *
+ * Renders the navbar, collapsible project sidebar, editor home area, and project create/rename/delete dialogs. Initializes the mock project list and wires dialog actions to handlers that create, rename, and delete projects while coordinating dialog submission state.
+ *
+ * @returns The editor workspace React element.
+ */
 export function EditorWorkspace() {
   const [projects, setProjects] = useState<MockProject[]>(getMockProjects)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)

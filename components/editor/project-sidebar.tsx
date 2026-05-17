@@ -16,6 +16,22 @@ interface ProjectSidebarProps {
   onDelete: (projectId: string) => void
 }
 
+/**
+ * Render a slide-in "Projects" sidebar with "My Projects" and "Shared" tabs and project management controls.
+ *
+ * The component shows a background overlay that closes the sidebar when clicked, sets `aria-hidden` and `inert`
+ * appropriately based on `isOpen`, and disables focusable controls when closed. The "My Projects" tab lists
+ * projects where `project.isOwner` is true; each owned project exposes Rename and Delete actions. The "Shared"
+ * tab displays a static empty state. A full-width "New Project" button triggers creation.
+ *
+ * @param isOpen - Whether the sidebar and overlay are visible
+ * @param onClose - Callback invoked to close the sidebar (also called when overlay is clicked or close button pressed)
+ * @param projects - Array of project objects; owned projects are determined by `project.isOwner`
+ * @param onCreate - Callback invoked when the "New Project" button is clicked
+ * @param onRename - Callback invoked to initiate renaming; called with `(projectId, currentName)`
+ * @param onDelete - Callback invoked to initiate deletion; called with `(projectId)`
+ * @returns The rendered sidebar element
+ */
 export function ProjectSidebar({ isOpen, onClose, projects, onCreate, onRename, onDelete }: ProjectSidebarProps) {
   const [activeTab, setActiveTab] = useState("my-projects")
   const ownedProjects = projects.filter((p) => p.isOwner)
