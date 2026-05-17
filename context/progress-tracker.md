@@ -4,14 +4,15 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- 04 - Project Dialogs
+- 05 - Prisma
 
 ## Current Goal
 
-- Build the `/editor` home screen and add project dialogs/sidebar actions. No API calls or persistence yet.
+- Add Prisma project data models, client singleton, and first migration.
 
-## In Progress
+## Completed
 
+### Phase 04 - Project Dialogs
 - Editor home screen with heading, description, and New Project button
 - Create Project dialog with live slug preview
 - Rename Project dialog with prefilled input, auto-focus, and Enter-to-submit
@@ -20,8 +21,6 @@ Update this file whenever the current phase, active feature, or implementation s
 - Dedicated useProjectDialogs hook for dialog/form/loading state
 - lib/slug.ts utility, lib/mock-projects.ts mock data
 - Create/rename/delete operations update the sidebar project list
-
-## Completed
 
 ### Phase 03 - Auth
 - Stripped Next.js boilerplate (global.css, public SVGs, page.tsx)
@@ -41,6 +40,18 @@ Update this file whenever the current phase, active feature, or implementation s
 - Fixed logout render error: moved ClerkProvider inside `<body>` to prevent hydration edge cases, and set `afterSignOutUrl="/sign-in"` on ClerkProvider so sign-out redirects directly to sign-in instead of the double-redirect through `/`.
 - Polished Clerk auth UI: added global CSS overrides in globals.css targeting the correct DOM class names. `cl-socialButtonsBlockButton` (the actual rendered selector, not `cl-socialButtonsIconButton`) now gets a visible `--border-default` border; `cl-socialButtonsBlockButtonText` uses `--text-primary`; `cl-lastAuthenticationStrategyBadge` uses visible muted/subtle colors. `cl-socialButtonsIconButton` also targeted for non-last-used icons.
 
+### Phase 05 - Prisma
+- Restructured schema for multi-file support: moved generator + datasource from `prisma/schema.prisma` to `prisma/models/schema.prisma` with updated output path (`../../app/generated/prisma`)
+- Created `prisma/models/project.prisma` with Project model (ownerId, name, description?, status enum, canvasJsonPath?, timestamps, indexes) and ProjectCollaborator model (project relation with cascade delete, email, unique constraint, indexes)
+- Updated `package.json` with `"prisma": { "schema": "prisma/models/" }` to point Prisma CLI at the models directory
+- Existing `prisma.config.ts` (auto-generated) with `schema: "prisma/"` correctly resolves `.prisma` files in subdirectories
+- Created `lib/prisma.ts` as a cached singleton, branching on `DATABASE_URL`: uses Accelerate when URL starts with `prisma+postgres://`, otherwise uses `@prisma/adapter-pg` with `pg.Pool`
+- Caches client on `globalThis` in non-production for Next.js hot reload safety
+- Ran `prisma migrate dev --name init` — migration created both tables with all indexes, unique constraints, and cascade delete
+- `prisma generate` outputs client to `app/generated/prisma/`
+- Import uses `@/app/generated/prisma/client` path alias instead of `@prisma/client` (which re-exports from `.prisma/client/default` — not present with custom output path)
+- `npm run build` passes
+
 ## Next Up
 
 - TBD
@@ -57,6 +68,10 @@ Update this file whenever the current phase, active feature, or implementation s
 - Protected-first middleware strategy: all routes are protected by default except `/`, `/sign-in`, and `/sign-up`.
 - Auth pages use CSS variable tokens (`var(--accent-primary)`, `var(--text-primary)`, etc.) — no hardcoded colors.
 - UserButton appearance mirrors the same theme override for visual consistency with the editor chrome.
+- Schema split across multiple `.prisma` files under `prisma/models/` via Prisma's multi-file support (auto-discovered by `schema: "prisma/"` config in `prisma.config.ts`).
+- Generator output path `../../app/generated/prisma` (relative to `prisma/models/`) keeps generated code outside `node_modules` for visibility.
+- `lib/prisma.ts` imports from `@/app/generated/prisma/client` (via `@/*` alias) instead of `@prisma/client`, because the latter re-exports from `.prisma/client/default` which isn't populated with custom generator output paths.
+- PrismaClient in Prisma 7 requires either `adapter` or `accelerateUrl`; the singleton branches on `DATABASE_URL` prefix to choose between Accelerate and direct PostgreSQL adapter.
 
 ## Session Notes
 
@@ -70,3 +85,6 @@ Update this file whenever the current phase, active feature, or implementation s
 - Project Sidebar: fixed-position floating overlay with backdrop, slides via translate-x, rounded-2xl border-surface panel, controlled shadcn Tabs with two tabs, New Project button with Plus icon.
 - Dialog pattern: no new code needed — existing dialog.tsx already exposes DialogHeader, DialogFooter, DialogTitle, DialogDescription with correct token usage.
 - Auth (Phase 03) completed in one session: @clerk/ui installed, proxy.ts, ClerkProvider, sign-in/up pages, root page redirect, editor workspace, UserButton in navbar. All styles use CSS custom properties via Clerk appearance variables.
+- Phase 05 (Prisma) completed in one session: multi-file schema restructure, Project + ProjectCollaborator models, lib/prisma.ts singleton, migration applied, generated client at `app/generated/prisma/`, build passes.
+- Key lesson: Prisma 7's `@prisma/client` package re-exports from `.prisma/client/default`. With a custom generator output path, those files aren't created, so direct import from the generated client path is required.
+- Key lesson: Prisma 7 `PrismaClient` constructor requires one argument — either `adapter` (for `@prisma/adapter-pg`) or `accelerateUrl` (for Accelerate). Empty options aren't accepted by the strict `Subset` type.
