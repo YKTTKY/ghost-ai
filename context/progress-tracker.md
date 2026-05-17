@@ -4,14 +4,26 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- 03 - Auth
+- 04 - Project Dialogs
 
 ## Current Goal
 
-- Wire Clerk into the Next.js app: provider, proxy.ts, auth pages, route protection, and user menu.
+- Build the `/editor` home screen and add project dialogs/sidebar actions. No API calls or persistence yet.
+
+## In Progress
+
+- Editor home screen with heading, description, and New Project button
+- Create Project dialog with live slug preview
+- Rename Project dialog with prefilled input, auto-focus, and Enter-to-submit
+- Delete Project dialog with destructive confirmation
+- Sidebar project items with rename/delete actions for owned projects
+- Dedicated useProjectDialogs hook for dialog/form/loading state
+- lib/slug.ts utility, lib/mock-projects.ts mock data
+- Create/rename/delete operations update the sidebar project list
 
 ## Completed
 
+### Phase 03 - Auth
 - Stripped Next.js boilerplate (global.css, public SVGs, page.tsx)
 - Design system setup: shadcn init, dark theme CSS variables, lucide-react, cn() helper, 7 components
 - Editor Navbar: fixed-height top bar with sidebar toggle (PanelLeftOpen/Close icons)
@@ -26,13 +38,6 @@ Update this file whenever the current phase, active feature, or implementation s
 - Root page (`/`) redirects authenticated users to `/editor`, unauthenticated to `/sign-in`
 - Editor workspace component created with navbar, sidebar, and workspace area
 - UserButton added to editor navbar right section with theme-matched appearance
-
-## In Progress
-
-- None yet.
-
-## Completed
-
 - Fixed logout render error: moved ClerkProvider inside `<body>` to prevent hydration edge cases, and set `afterSignOutUrl="/sign-in"` on ClerkProvider so sign-out redirects directly to sign-in instead of the double-redirect through `/`.
 - Polished Clerk auth UI: added global CSS overrides in globals.css targeting the correct DOM class names. `cl-socialButtonsBlockButton` (the actual rendered selector, not `cl-socialButtonsIconButton`) now gets a visible `--border-default` border; `cl-socialButtonsBlockButtonText` uses `--text-primary`; `cl-lastAuthenticationStrategyBadge` uses visible muted/subtle colors. `cl-socialButtonsIconButton` also targeted for non-last-used icons.
 

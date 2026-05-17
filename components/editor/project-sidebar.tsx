@@ -1,17 +1,24 @@
 "use client"
 
 import { useState } from "react"
+import type { MockProject } from "@/lib/mock-projects"
 import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Plus, XIcon } from "lucide-react"
+import { Pencil, Plus, Trash2, XIcon } from "lucide-react"
 
 interface ProjectSidebarProps {
   isOpen: boolean
   onClose: () => void
+  projects: MockProject[]
+  onCreate: () => void
+  onRename: (projectId: string, currentName: string) => void
+  onDelete: (projectId: string) => void
 }
 
-export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
+export function ProjectSidebar({ isOpen, onClose, projects, onCreate, onRename, onDelete }: ProjectSidebarProps) {
   const [activeTab, setActiveTab] = useState("my-projects")
+  const ownedProjects = projects.filter((p) => p.isOwner)
 
   return (
     <>
@@ -45,16 +52,54 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
               </TabsList>
             </div>
 
-            <TabsContent value="my-projects" className="flex flex-1 flex-col items-center justify-center p-4">
-              <p className="text-sm text-text-muted">No projects yet</p>
+            <TabsContent value="my-projects" className="flex min-h-0 flex-1 flex-col">
+              {ownedProjects.length === 0 ? (
+                <div className="flex flex-1 items-center justify-center p-4">
+                  <p className="text-sm text-text-muted">No projects yet</p>
+                </div>
+              ) : (
+                <ScrollArea className="flex-1 px-4">
+                  <div className="flex flex-col gap-1 pb-2">
+                    {ownedProjects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="group flex items-center justify-between rounded-lg px-3 py-2 text-sm text-text-primary hover:bg-bg-subtle"
+                      >
+                        <span className="truncate">{project.name}</span>
+                        <div className="flex shrink-0 gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => onRename(project.id, project.name)}
+                            tabIndex={!isOpen ? -1 : undefined}
+                          >
+                            <Pencil className="size-3.5" />
+                            <span className="sr-only">Rename {project.name}</span>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => onDelete(project.id)}
+                            tabIndex={!isOpen ? -1 : undefined}
+                          >
+                            <Trash2 className="size-3.5" />
+                            <span className="sr-only">Delete {project.name}</span>
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
             </TabsContent>
+
             <TabsContent value="shared" className="flex flex-1 flex-col items-center justify-center p-4">
               <p className="text-sm text-text-muted">No shared projects</p>
             </TabsContent>
           </Tabs>
 
           <div className="p-4 pt-2">
-            <Button className="w-full gap-2" tabIndex={!isOpen ? -1 : undefined}>
+            <Button className="w-full gap-2" onClick={onCreate} tabIndex={!isOpen ? -1 : undefined}>
               <Plus className="size-4" />
               New Project
             </Button>
