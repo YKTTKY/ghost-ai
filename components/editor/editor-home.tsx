@@ -7,6 +7,12 @@ interface EditorHomeProps {
   onCreate: () => void
 }
 
+/**
+ * Render a centered home view prompting the user to create a new project or open an existing one.
+ *
+ * @param onCreate - Callback invoked when the "New Project" button is clicked.
+ * @returns A React element representing the editor home UI.
+ */
 export function EditorHome({ onCreate }: EditorHomeProps) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-3">
