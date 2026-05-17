@@ -92,16 +92,22 @@ export function ProjectDialogs({
               Rename &ldquo;{currentProjectName}&rdquo; to something new.
             </DialogDescription>
           </DialogHeader>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && name.trim()) {
-                onRename()
-              }
-            }}
-          />
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="rename-project-name" className="text-sm text-text-secondary">
+              Project name
+            </label>
+            <Input
+              id="rename-project-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && name.trim()) {
+                  onRename()
+                }
+              }}
+            />
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={onClose}>
               Cancel

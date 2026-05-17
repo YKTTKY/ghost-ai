@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import type { MockProject } from "@/lib/mock-projects"
 import { getMockProjects, createMockProject, renameMockProject, deleteMockProject } from "@/lib/mock-projects"
 import { useProjectDialogs } from "@/hooks/use-project-dialogs"
@@ -12,6 +12,7 @@ import { ProjectSidebar } from "@/components/editor/project-sidebar"
 export function EditorWorkspace() {
   const [projects, setProjects] = useState<MockProject[]>(getMockProjects)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const pendingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const {
     activeDialog,
@@ -27,30 +28,39 @@ export function EditorWorkspace() {
     closeDialog,
   } = useProjectDialogs()
 
-  const handleCreate = () => {
+  useEffect(() => {
+    return () => {
+      if (pendingTimeoutRef.current) {
+        clearTimeout(pendingTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const submitAction = (mutation: () => void) => {
+    if (isSubmitting) return
     setIsSubmitting(true)
-    setTimeout(() => {
-      setProjects((prev) => createMockProject(name, prev))
+    if (pendingTimeoutRef.current) {
+      clearTimeout(pendingTimeoutRef.current)
+    }
+    pendingTimeoutRef.current = setTimeout(() => {
+      mutation()
       closeDialog()
+      pendingTimeoutRef.current = null
     }, 300)
+  }
+
+  const handleCreate = () => {
+    submitAction(() => setProjects((prev) => createMockProject(name, prev)))
   }
 
   const handleRename = () => {
     if (!selectedProjectId) return
-    setIsSubmitting(true)
-    setTimeout(() => {
-      setProjects((prev) => renameMockProject(selectedProjectId, name, prev))
-      closeDialog()
-    }, 300)
+    submitAction(() => setProjects((prev) => renameMockProject(selectedProjectId, name, prev)))
   }
 
   const handleDelete = () => {
     if (!selectedProjectId) return
-    setIsSubmitting(true)
-    setTimeout(() => {
-      setProjects((prev) => deleteMockProject(selectedProjectId, prev))
-      closeDialog()
-    }, 300)
+    submitAction(() => setProjects((prev) => deleteMockProject(selectedProjectId, prev)))
   }
 
   return (

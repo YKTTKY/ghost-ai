@@ -66,7 +66,7 @@ export function ProjectSidebar({ isOpen, onClose, projects, onCreate, onRename, 
                         className="group flex items-center justify-between rounded-lg px-3 py-2 text-sm text-text-primary hover:bg-bg-subtle"
                       >
                         <span className="truncate">{project.name}</span>
-                        <div className="flex shrink-0 gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex shrink-0 gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                           <Button
                             variant="ghost"
                             size="icon-xs"

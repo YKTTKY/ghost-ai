@@ -1,3 +1,5 @@
+import { toSlug } from "@/lib/slug"
+
 export interface MockProject {
   id: string
   name: string
@@ -18,17 +20,10 @@ export function getMockProjects(): MockProject[] {
 let nextId = 4
 
 export function createMockProject(name: string, projects: MockProject[]): MockProject[] {
-  const slug = name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/[\s_]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "")
   const project: MockProject = {
     id: `p${nextId++}`,
     name,
-    slug,
+    slug: toSlug(name),
     isOwner: true,
   }
   return [...projects, project]
@@ -36,7 +31,7 @@ export function createMockProject(name: string, projects: MockProject[]): MockPr
 
 export function renameMockProject(projectId: string, newName: string, projects: MockProject[]): MockProject[] {
   return projects.map((p) =>
-    p.id === projectId ? { ...p, name: newName } : p
+    p.id === projectId ? { ...p, name: newName, slug: toSlug(newName) } : p
   )
 }
 
