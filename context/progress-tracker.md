@@ -4,15 +4,33 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- 05 - Prisma
+- 07 - Wire Editor Home
 
 ## Current Goal
 
-- Add Prisma project data models, client singleton, and first migration.
+- Wire the editor home sidebar and dialogs to the real project API.
 
 ## Completed
 
-### Phase 04 - Project Dialogs
+### Phase 07 - Wire Editor Home
+- Created `lib/project-data.ts` with `getOwnedProjects()` and `getSharedProjects()` server-side helpers
+- Created `hooks/use-project-actions.ts` — combined hook managing dialog state, project list, API mutations (create/rename/delete via fetch), and navigation (`useRouter`)
+- Server-side data fetching: `app/editor/page.tsx` fetches owned projects via Prisma and passes as props to `EditorWorkspace`
+- `EditorWorkspace` accepts `projects` and `userId` props, uses `useProjectActions` instead of mock-based `useProjectDialogs` + mock data
+- `ProjectSidebar` uses real `ProjectData` type; `isOwner` computed via `ownerId === userId`
+- `ProjectDialogs` simplified: replaced `projects[]` + `selectedProjectId` lookup with single `currentProjectName` string prop
+- `npm run build` passes
+
+### Phase 06 - Project APIs
+- `GET /api/projects` — lists current user's projects (ordered by `createdAt` desc)
+- `POST /api/projects` — creates a project with `ownerId` from Clerk; defaults missing name to `"Untitled Project"`
+- `PATCH /api/projects/[projectId]` — renames a project; ownership check returns `403` for non-owners
+- `DELETE /api/projects/[projectId]` — deletes a project; ownership check returns `403` for non-owners
+- All unauthenticated requests return `401` via explicit `auth()` check in each handler
+- Route files at `app/api/projects/route.ts` and `app/api/projects/[projectId]/route.ts`
+- `npm run build` passes
+
+### Phase 05 - Prisma
 - Editor home screen with heading, description, and New Project button
 - Create Project dialog with live slug preview
 - Rename Project dialog with prefilled input, auto-focus, and Enter-to-submit
@@ -54,7 +72,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- TBD
+- Workspace page route and canvas integration
 
 ## Open Questions
 

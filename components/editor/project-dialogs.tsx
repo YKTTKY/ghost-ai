@@ -1,7 +1,6 @@
 "use client"
 
-import type { DialogType } from "@/hooks/use-project-dialogs"
-import type { MockProject } from "@/lib/mock-projects"
+import type { DialogType } from "@/hooks/use-project-actions"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,53 +14,29 @@ import { Input } from "@/components/ui/input"
 
 interface ProjectDialogsProps {
   activeDialog: DialogType
-  selectedProjectId: string | null
+  currentProjectName: string
   name: string
   setName: (name: string) => void
   slug: string
   isSubmitting: boolean
-  projects: MockProject[]
   onCreate: () => void
   onRename: () => void
   onDelete: () => void
   onClose: () => void
 }
 
-/**
- * Render modal dialogs for creating, renaming, and deleting projects based on `activeDialog`.
- *
- * The component derives the currently selected project's name from `projects` and `selectedProjectId`,
- * binds `name`/`setName` to the create/rename inputs, and disables actions while `isSubmitting` is true.
- *
- * @param activeDialog - Which dialog is currently open: `"create"`, `"rename"`, or `"delete"`.
- * @param selectedProjectId - ID of the currently selected project; used to display the project's name in dialogs.
- * @param name - Controlled value for the project name input used by the create and rename dialogs.
- * @param setName - Setter to update the `name` input.
- * @param slug - Optional slug string; when present a `/slug` preview is shown in the create dialog.
- * @param isSubmitting - When true, action buttons are disabled and their labels show loading text.
- * @param projects - Array of projects used to look up the selected project's name.
- * @param onCreate - Called when the Create action is confirmed.
- * @param onRename - Called when the Rename action is confirmed (also triggered by Enter in the rename input).
- * @param onDelete - Called when the Delete action is confirmed.
- * @param onClose - Called when any dialog is dismissed or Cancel is clicked.
- * @returns The JSX fragment containing the Create, Rename, and Delete modal dialogs.
- */
 export function ProjectDialogs({
   activeDialog,
-  selectedProjectId,
+  currentProjectName,
   name,
   setName,
   slug,
   isSubmitting,
-  projects,
   onCreate,
   onRename,
   onDelete,
   onClose,
 }: ProjectDialogsProps) {
-  const selectedProject = projects.find((p) => p.id === selectedProjectId)
-  const currentProjectName = selectedProject?.name ?? ""
-
   return (
     <>
       <Dialog
