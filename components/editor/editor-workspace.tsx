@@ -1,67 +1,38 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import type { MockProject } from "@/lib/mock-projects"
-import { getMockProjects, createMockProject, renameMockProject, deleteMockProject } from "@/lib/mock-projects"
-import { useProjectDialogs } from "@/hooks/use-project-dialogs"
+import { useState } from "react"
+import type { ProjectData } from "@/hooks/use-project-actions"
+import { useProjectActions } from "@/hooks/use-project-actions"
 import { EditorHome } from "@/components/editor/editor-home"
 import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectDialogs } from "@/components/editor/project-dialogs"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
 
-export function EditorWorkspace() {
-  const [projects, setProjects] = useState<MockProject[]>(getMockProjects)
+interface EditorWorkspaceProps {
+  projects: ProjectData[]
+  userId: string
+}
+
+export function EditorWorkspace({ projects: initialProjects, userId }: EditorWorkspaceProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const pendingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const {
+    projects,
     activeDialog,
     selectedProjectId,
+    selectedProjectName,
     name,
     setName,
     slug,
     isSubmitting,
-    setIsSubmitting,
     openCreate,
     openRename,
     openDelete,
     closeDialog,
-  } = useProjectDialogs()
-
-  useEffect(() => {
-    return () => {
-      if (pendingTimeoutRef.current) {
-        clearTimeout(pendingTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  const submitAction = (mutation: () => void) => {
-    if (isSubmitting) return
-    setIsSubmitting(true)
-    if (pendingTimeoutRef.current) {
-      clearTimeout(pendingTimeoutRef.current)
-    }
-    pendingTimeoutRef.current = setTimeout(() => {
-      mutation()
-      closeDialog()
-      pendingTimeoutRef.current = null
-    }, 300)
-  }
-
-  const handleCreate = () => {
-    submitAction(() => setProjects((prev) => createMockProject(name, prev)))
-  }
-
-  const handleRename = () => {
-    if (!selectedProjectId) return
-    submitAction(() => setProjects((prev) => renameMockProject(selectedProjectId, name, prev)))
-  }
-
-  const handleDelete = () => {
-    if (!selectedProjectId) return
-    submitAction(() => setProjects((prev) => deleteMockProject(selectedProjectId, prev)))
-  }
+    handleCreate,
+    handleRename,
+    handleDelete,
+  } = useProjectActions(initialProjects, userId)
 
   return (
     <div className="flex flex-col h-screen bg-base">
@@ -73,6 +44,7 @@ export function EditorWorkspace() {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         projects={projects}
+        userId={userId}
         onCreate={openCreate}
         onRename={openRename}
         onDelete={openDelete}
@@ -82,12 +54,11 @@ export function EditorWorkspace() {
       </main>
       <ProjectDialogs
         activeDialog={activeDialog}
-        selectedProjectId={selectedProjectId}
+        currentProjectName={selectedProjectName}
         name={name}
         setName={setName}
         slug={slug}
         isSubmitting={isSubmitting}
-        projects={projects}
         onCreate={handleCreate}
         onRename={handleRename}
         onDelete={handleDelete}

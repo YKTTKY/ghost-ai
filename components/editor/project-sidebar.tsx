@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { MockProject } from "@/lib/mock-projects"
+import type { ProjectData } from "@/hooks/use-project-actions"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,15 +10,16 @@ import { Pencil, Plus, Trash2, XIcon } from "lucide-react"
 interface ProjectSidebarProps {
   isOpen: boolean
   onClose: () => void
-  projects: MockProject[]
+  projects: ProjectData[]
+  userId: string
   onCreate: () => void
   onRename: (projectId: string, currentName: string) => void
   onDelete: (projectId: string) => void
 }
 
-export function ProjectSidebar({ isOpen, onClose, projects, onCreate, onRename, onDelete }: ProjectSidebarProps) {
+export function ProjectSidebar({ isOpen, onClose, projects, userId, onCreate, onRename, onDelete }: ProjectSidebarProps) {
   const [activeTab, setActiveTab] = useState("my-projects")
-  const ownedProjects = projects.filter((p) => p.isOwner)
+  const ownedProjects = projects.filter((p) => p.ownerId === userId)
 
   return (
     <>

@@ -1,7 +1,6 @@
 "use client"
 
-import type { DialogType } from "@/hooks/use-project-dialogs"
-import type { MockProject } from "@/lib/mock-projects"
+import type { DialogType } from "@/hooks/use-project-actions"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,12 +14,11 @@ import { Input } from "@/components/ui/input"
 
 interface ProjectDialogsProps {
   activeDialog: DialogType
-  selectedProjectId: string | null
+  currentProjectName: string
   name: string
   setName: (name: string) => void
   slug: string
   isSubmitting: boolean
-  projects: MockProject[]
   onCreate: () => void
   onRename: () => void
   onDelete: () => void
@@ -29,20 +27,16 @@ interface ProjectDialogsProps {
 
 export function ProjectDialogs({
   activeDialog,
-  selectedProjectId,
+  currentProjectName,
   name,
   setName,
   slug,
   isSubmitting,
-  projects,
   onCreate,
   onRename,
   onDelete,
   onClose,
 }: ProjectDialogsProps) {
-  const selectedProject = projects.find((p) => p.id === selectedProjectId)
-  const currentProjectName = selectedProject?.name ?? ""
-
   return (
     <>
       <Dialog
