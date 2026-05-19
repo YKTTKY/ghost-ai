@@ -14,9 +14,9 @@ const initialProjects: MockProject[] = [
 ]
 
 /**
- * Get a deep-cloned array of the seeded mock projects.
+ * Return a deep clone of the seeded mock projects.
  *
- * @returns A deep-cloned array of the seeded MockProject objects; modifying the returned array or its project objects does not mutate the module's internal seed data.
+ * @returns A deep-cloned array of the seeded `MockProject` objects; modifying the returned array or its project objects does not mutate the module's internal seed data.
  */
 export function getMockProjects(): MockProject[] {
   return structuredClone(initialProjects)

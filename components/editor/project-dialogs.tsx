@@ -25,6 +25,21 @@ interface ProjectDialogsProps {
   onClose: () => void
 }
 
+/**
+ * Render project create, rename, and delete modal dialogs according to the active dialog state.
+ *
+ * @param activeDialog - Which dialog to show: `"create" | "rename" | "delete"`.
+ * @param currentProjectName - Current project name shown in rename/delete descriptions.
+ * @param name - Controlled input value for the project name field.
+ * @param setName - Setter for the `name` input.
+ * @param slug - Optional read-only path suffix displayed as `/{slug}` when present.
+ * @param isSubmitting - Disables actions and updates button labels when an operation is in progress.
+ * @param onCreate - Handler invoked to create a project.
+ * @param onRename - Handler invoked to rename the current project.
+ * @param onDelete - Handler invoked to delete the current project.
+ * @param onClose - Handler invoked when any dialog is dismissed or closed.
+ * @returns The JSX element containing the three dialogs; only the dialog matching `activeDialog` is open.
+ */
 export function ProjectDialogs({
   activeDialog,
   currentProjectName,

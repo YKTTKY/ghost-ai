@@ -13,6 +13,14 @@ interface EditorWorkspaceProps {
   userId: string
 }
 
+/**
+ * Render the editor workspace layout and coordinate sidebar visibility and project dialog state from the provided initial projects and user ID.
+ *
+ * Renders the top navigation, a collapsible project sidebar, the main editor home, and project dialogs while wiring UI controls and handlers derived from the initial project list and user context.
+ *
+ * @param initialProjects - The initial list of projects to populate the sidebar and dialogs
+ * @param userId - The current user's identifier used to scope project actions
+ */
 export function EditorWorkspace({ projects: initialProjects, userId }: EditorWorkspaceProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
