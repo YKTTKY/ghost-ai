@@ -6,11 +6,11 @@ import { toSlug } from "@/lib/slug"
 export type DialogType = "create" | "rename" | "delete" | null
 
 /**
- * Manage dialog state for project create, rename, and delete flows.
+ * Manages dialog state for project create, rename, and delete flows.
  *
  * Exposes state and callbacks to open/close dialogs, edit the pending name, and track submission status.
  *
- * @returns An object with:
+ * @returns An object containing:
  * - `activeDialog` — the currently open dialog: `"create" | "rename" | "delete" | null`
  * - `selectedProjectId` — the project ID associated with the active dialog, or `null`
  * - `name` — the current input name for create/rename (empty for delete)

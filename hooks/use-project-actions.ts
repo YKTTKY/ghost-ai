@@ -13,10 +13,30 @@ export interface ProjectData {
   createdAt: string
 }
 
+/**
+ * Generates a short pseudo-random 4-character alphanumeric suffix.
+ *
+ * @returns A 4-character lowercase alphanumeric string.
 function generateSuffix(): string {
   return Math.random().toString(36).substring(2, 6)
 }
 
+/**
+ * Manage project list state and dialog/form actions for creating, renaming, and deleting projects.
+ *
+ * @param initialProjects - Initial array of projects to populate local state
+ * @param userId - Current user's ID (accepted but not used by this hook)
+ * @returns An object containing the current project state, dialog/input state, derived values, and action handlers:
+ * - `projects`: current array of `ProjectData`
+ * - `activeDialog`: current dialog type (`"create" | "rename" | "delete" | null`)
+ * - `selectedProjectId`: ID of the project targeted by rename/delete, or `null`
+ * - `selectedProjectName`: name of the selected project, or `""`
+ * - `name` / `setName`: current input name and its setter
+ * - `slug`: URL-friendly slug derived from `name`, or `""` when `name` is empty
+ * - `isSubmitting`: boolean flag preventing concurrent submissions
+ * - `openCreate`, `openRename`, `openDelete`, `closeDialog`: dialog control functions
+ * - `handleCreate`, `handleRename`, `handleDelete`: async handlers that perform corresponding API requests and update local state
+ */
 export function useProjectActions(initialProjects: ProjectData[], userId: string) {
   const router = useRouter()
   const [projects, setProjects] = useState<ProjectData[]>(initialProjects)

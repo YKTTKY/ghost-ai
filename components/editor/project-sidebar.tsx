@@ -17,6 +17,21 @@ interface ProjectSidebarProps {
   onDelete: (projectId: string) => void
 }
 
+/**
+ * Renders a slide-in projects sidebar with tabs for "My Projects" and "Shared", per-project rename/delete actions, and a "New Project" action.
+ *
+ * The sidebar's visibility is controlled by `isOpen`; clicking the backdrop or the header close button calls `onClose`. The "My Projects"
+ * tab lists projects whose `ownerId` equals `userId`. Action callbacks are invoked for creating, renaming, and deleting projects.
+ *
+ * @param isOpen - Whether the sidebar is visible
+ * @param onClose - Callback invoked to close the sidebar
+ * @param projects - Array of project objects to display
+ * @param userId - Identifier used to determine which projects are owned by the current user (projects with `ownerId === userId` are shown under "My Projects")
+ * @param onCreate - Callback invoked when the "New Project" button is clicked
+ * @param onRename - Callback invoked to start renaming a project; called with `(projectId, currentName)`
+ * @param onDelete - Callback invoked to delete a project; called with `(projectId)`
+ * @returns The rendered sidebar React element
+ */
 export function ProjectSidebar({ isOpen, onClose, projects, userId, onCreate, onRename, onDelete }: ProjectSidebarProps) {
   const [activeTab, setActiveTab] = useState("my-projects")
   const ownedProjects = projects.filter((p) => p.ownerId === userId)

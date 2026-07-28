@@ -2,6 +2,13 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Updates a project's name if the authenticated user is the project's owner.
+ *
+ * @param request - Incoming Next.js request containing a JSON body with a `name` field
+ * @param params - An object whose promise resolves to route params; expects `projectId`
+ * @returns The updated project object as JSON on success; on failure returns a JSON error response with status `401` (unauthorized), `400` (bad request), or `403` (forbidden)
+ */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ projectId: string }> }
@@ -34,6 +41,13 @@ export async function PATCH(
   return NextResponse.json(project);
 }
 
+/**
+ * Deletes a project owned by the authenticated user.
+ *
+ * @param _request - The incoming request object (unused).
+ * @param params - A promise resolving to route parameters; must include `projectId`.
+ * @returns A NextResponse containing `{ success: true }` on successful deletion; returns a JSON error response with `{ error: "Unauthorized" }` and status 401 if the caller is not authenticated, or `{ error: "Forbidden" }` and status 403 if the project does not belong to the authenticated user.
+ */
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ projectId: string }> }
