@@ -4,13 +4,30 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- 07 - Wire Editor Home
+- 08 - Editor Workspace Shell
 
 ## Current Goal
 
-- Wire the editor home sidebar and dialogs to the real project API.
+- Build the `/editor/[roomId]` workspace shell with server-side access checks (no canvas logic yet).
 
 ## Completed
+
+### Phase 08 - Editor Workspace Shell
+- Created `lib/project-access.ts` with `getClerkIdentity()`, `getAccessibleProject()`, and `hasProjectAccess()`
+- Created `components/editor/access-denied.tsx` — centered lock state with link back to `/editor`
+- Created `app/editor/[roomId]/page.tsx` as a server component:
+  - unauthenticated → redirect `/sign-in`
+  - missing/unauthorized project → `AccessDenied`
+  - authorized → `RoomWorkspace` with project context
+- Created `components/editor/room-workspace.tsx` full-viewport shell:
+  - navbar with project name, share button, AI sidebar toggle
+  - existing `ProjectSidebar` with current room highlighted
+  - central canvas placeholder
+  - right AI sidebar placeholder (toggleable, no chat logic)
+- Extended `EditorNavbar` with optional `projectName`, `onShare`, AI toggle props
+- Extended `ProjectSidebar` with optional `currentRoomId`, project links to `/editor/[id]`, and shared-projects list
+- Fixed `getSharedProjects(email)` param naming to match collaborator email matching
+- `npm run build` passes
 
 ### Phase 07 - Wire Editor Home
 - Created `lib/project-data.ts` with `getOwnedProjects()` and `getSharedProjects()` server-side helpers
@@ -72,7 +89,9 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Workspace page route and canvas integration
+- Canvas integration (Liveblocks + React Flow)
+- Real sharing behavior
+- AI chat sidebar
 
 ## Open Questions
 
@@ -90,6 +109,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - Generator output path `../../app/generated/prisma` (relative to `prisma/models/`) keeps generated code outside `node_modules` for visibility.
 - `lib/prisma.ts` imports from `@/app/generated/prisma/client` (via `@/*` alias) instead of `@prisma/client`, because the latter re-exports from `.prisma/client/default` which isn't populated with custom generator output paths.
 - PrismaClient in Prisma 7 requires either `adapter` or `accelerateUrl`; the singleton branches on `DATABASE_URL` prefix to choose between Accelerate and direct PostgreSQL adapter.
+- Room access checks live in `lib/project-access.ts` (ownerId or collaborator email), not inline in the page component.
+- Missing and unauthorized rooms both render the same `AccessDenied` UI; unauthenticated users redirect to `/sign-in`.
 
 ## Session Notes
 
@@ -106,3 +127,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - Phase 05 (Prisma) completed in one session: multi-file schema restructure, Project + ProjectCollaborator models, lib/prisma.ts singleton, migration applied, generated client at `app/generated/prisma/`, build passes.
 - Key lesson: Prisma 7's `@prisma/client` package re-exports from `.prisma/client/default`. With a custom generator output path, those files aren't created, so direct import from the generated client path is required.
 - Key lesson: Prisma 7 `PrismaClient` constructor requires one argument — either `adapter` (for `@prisma/adapter-pg`) or `accelerateUrl` (for Accelerate). Empty options aren't accepted by the strict `Subset` type.
+- Phase 08: room page is a server component; interactive shell is `RoomWorkspace` client component. Share/AI are UI-only placeholders with no backend behavior yet.

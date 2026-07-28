@@ -37,15 +37,15 @@ export async function getOwnedProjects(userId: string) {
 }
 
 /**
- * Fetches projects shared with the specified user (where the user is listed as a collaborator), ordered by newest first.
+ * Fetches projects shared with the specified email (collaborator match), ordered by newest first.
  *
- * @param userId - The user's email used to match collaborator entries
+ * @param email - The user's primary email used to match collaborator entries
  * @returns An array of serialized project objects containing `id`, `name`, `ownerId`, and `createdAt` as an ISO string, ordered by `createdAt` descending
  */
-export async function getSharedProjects(userId: string) {
+export async function getSharedProjects(email: string) {
   const projects = await prisma.project.findMany({
     where: {
-      collaborators: { some: { email: userId } },
+      collaborators: { some: { email } },
     },
     orderBy: { createdAt: "desc" },
   })
